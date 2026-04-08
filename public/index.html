@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nom's Calculator – AI Math Solver</title>
+  <meta name="description"
+    content="Solve math problems step by step with AI explanations. Supports graphing and bilingual support.">
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+
+  <script defer src="https://unpkg.com/mathlive@0.101.0/dist/mathlive.min.js"></script>
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+
+  <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=834f7b3b46824fa690abb7ba7daf7fc4"></script>
+
+
+  <link rel="stylesheet" href="/mathnote/css/style.css">
+  <link rel="stylesheet" href="/mathnote/css/animate.css">
+</head>
+
+<body>
+
+  <header class="header" id="header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-icon">∑</span>
+        <span class="logo-text">Nom's Calculator</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-icon" id="savedProblemsBtn" title="Saved Problems">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+        <span data-i18n="saved">Saved</span>
+      </button>
+      <button class="btn-icon" id="langToggle" title="Toggle Language">
+        <span id="langLabel">EN</span>
+      </button>
+      <button class="btn-icon" id="themeToggle" title="Toggle Theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path
+            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+
+  <main class="main">
+
+    <div class="tab-bar">
+      <button class="tab active" data-tab="solver" id="tabSolver">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+        <span data-i18n="solver">Solver</span>
+      </button>
+      <button class="tab" data-tab="word" id="tabWord">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span data-i18n="wordProblem">Word Problem</span>
+      </button>
+      <button class="tab" data-tab="graph" id="tabGraph">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        <span data-i18n="graphing">Graphing</span>
+      </button>
+    </div>
+
+
+    <div class="tab-content active" id="solverTab">
+
+      <section class="input-section glass-card">
+        <div class="input-header">
+          <h2 data-i18n="enterProblem">Enter your math problem</h2>
+          <div class="class-level-wrapper">
+            <label for="classLevel" data-i18n="classLevel">Class Level</label>
+            <input type="text" id="classLevel" placeholder="e.g. Algebra 1, Statistics..."
+              data-i18n-placeholder="classLevelPlaceholder" class="input-text">
+          </div>
+        </div>
+
+        <div class="math-input-container">
+          <math-field id="mathInput" virtual-keyboard-mode="manual"></math-field>
+          <div class="math-input-actions">
+            <button class="btn-secondary" id="keyboardToggle" title="Toggle Keyboard">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8" />
+              </svg>
+          </div>
+        </div>
+
+
+        <div class="math-keyboard" id="mathKeyboard" style="display:none;">
+          <div class="keyboard-row">
+            <button class="key" data-cmd="\\frac{#@}{#?}">a/b</button>
+            <button class="key" data-cmd="\\sqrt{#@}">√</button>
+            <button class="key" data-cmd="\\sqrt[#?]{#@}">ⁿ√</button>
+            <button class="key" data-cmd="^{#?}"">x²</button>
+            <button class=" key" data-cmd="_{#?}">x₁</button>
+            <button class="key" data-cmd="\\pi">π</button>
+            <button class="key" data-cmd="\\theta">θ</button>
+          </div>
+          <div class="keyboard-row">
+            <button class="key" data-cmd="\\sin(#?)">sin</button>
+            <button class="key" data-cmd="\\cos(#?)">cos</button>
+            <button class="key" data-cmd="\\tan(#?)">tan</button>
+            <button class="key" data-cmd="\\log(#?)">log</button>
+            <button class="key" data-cmd="\\ln(#?)">ln</button>
+            <button class="key" data-cmd="\\infty">∞</button>
+            <button class="key" data-cmd="\\pm">±</button>
+          </div>
+          <div class="keyboard-row">
+            <button class="key" data-cmd="\\leq">≤</button>
+            <button class="key" data-cmd="\\geq">≥</button>
+            <button class="key" data-cmd="\\neq">≠</button>
+            <button class="key" data-cmd="\\int_{#?}^{#?}">∫</button>
+            <button class="key" data-cmd="\\sum_{#?}^{#?}">Σ</button>
+            <button class="key" data-cmd="\\lim_{#? \\to #?}">lim</button>
+            <button class="key" data-cmd="\\binom{#?}{#?}">C</button>
+          </div>
+          <div class="keyboard-row">
+            <button class="key" data-insert="(">( )</button>
+            <button class="key" data-insert="["">[ ]</button>
+            <button class=" key" data-cmd="\\left|#?\\right|">|x|</button>
+            <button class="key" data-cmd="\\vec{#@}">→</button>
+            <button class="key" data-cmd="\\overline{#@}">x̄</button>
+            <button class="key" data-cmd="\\hat{#@}">x̂</button>
+            <button class="key" data-cmd="\\dot{#@}">ẋ</button>
+          </div>
+        </div>
+
+
+        <div class="instruction-box">
+          <label for="instructionInput" data-i18n="instructionLabel">Additional instructions (optional)</label>
+          <textarea id="instructionInput" rows="2"
+            placeholder="e.g. Solve by factoring, Find the derivative, Simplify..."
+            data-i18n-placeholder="instructionPlaceholder" class="input-text textarea-input"></textarea>
+        </div>
+
+        <div class="solve-actions">
+          <button class="btn-primary" id="solveBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10" />
+            </svg>
+            <span data-i18n="solve">Solve Step by Step</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+
+    <div class="tab-content" id="wordTab">
+      <section class="input-section glass-card">
+        <div class="input-header">
+          <h2 data-i18n="enterWordProblem">Enter your word problem</h2>
+          <div class="class-level-wrapper">
+            <label for="wordClassLevel" data-i18n="classLevel">Class Level</label>
+            <input type="text" id="wordClassLevel" placeholder="e.g. 5th Grade, Physics..."
+              data-i18n-placeholder="classLevelPlaceholder" class="input-text">
+          </div>
+        </div>
+
+        <div class="word-input-container">
+          <textarea id="wordProblemInput" rows="6"
+            placeholder="e.g. A train leaves the station at 3 PM traveling at 60 mph..."
+            data-i18n-placeholder="wordProblemPlaceholder" class="input-text textarea-input"
+            style="font-size: 16px; line-height: 1.5;"></textarea>
+        </div>
+
+        <div class="solve-actions">
+          <button class="btn-primary" id="solveWordBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10" />
+            </svg>
+            <span data-i18n="solve">Solve Step by Step</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="sharedSolutionArea">
+
+      <div class="loading-container" id="loadingContainer" style="display:none;">
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+        </div>
+        <p class="loading-text" data-i18n="solving">Solving your problem...</p>
+      </div>
+
+
+      <section class="solution-section" id="solutionSection" style="display:none;">
+        <div class="solution-header">
+          <h2 data-i18n="solution">Solution</h2>
+          <div class="solution-actions">
+            <div class="verification-badge" id="verificationBadge" style="display:none;">
+              <span class="badge-icon"></span>
+              <span class="badge-text"></span>
+            </div>
+            <button class="btn-secondary" id="saveBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+              </svg>
+              <span data-i18n="save">Save</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Verification Detail Panel -->
+        <div class="verification-detail" id="verificationDetail" style="display:none;"></div>
+
+        <div class="steps-container" id="stepsContainer"></div>
+
+        <div class="final-answer glass-card" id="finalAnswer" style="display:none;">
+          <h3 data-i18n="finalAnswer">Final Answer</h3>
+          <div class="answer-content" id="answerContent"></div>
+          <p class="answer-summary" id="answerSummary"></p>
+        </div>
+      </section>
+    </div>
+
+
+    <div class="tab-content" id="graphTab">
+      <section class="graph-section glass-card">
+        <div class="graph-controls">
+          <div class="graph-mode-toggle">
+            <button class="btn-secondary active" id="equationModeBtn" data-i18n="equationMode">Equation Mode</button>
+            <button class="btn-secondary" id="pointModeBtn" data-i18n="pointMode">Point Mode</button>
+          </div>
+
+
+          <div class="equation-input" id="equationInput">
+            <label data-i18n="enterEquation">Enter equation (e.g. y = x^2 + 2x - 1)</label>
+            <div class="equation-field-wrapper">
+              <math-field id="equationField" virtual-keyboard-mode="manual"></math-field>
+              <button class="btn-primary" id="plotBtn">
+                <span data-i18n="plot">Plot</span>
+              </button>
+            </div>
+          </div>
+
+
+          <div class="point-input" id="pointInput" style="display:none;">
+            <p data-i18n="clickToAddPoints">Click on the graph to add points, or enter manually below</p>
+            <div class="manual-point-entry">
+              <div class="point-entry-fields">
+                <input type="number" id="manualPointX" placeholder="X" step="0.1" class="input-text point-coord-input">
+                <input type="number" id="manualPointY" placeholder="Y" step="0.1" class="input-text point-coord-input">
+                <button class="btn-secondary" id="addPointBtn" data-i18n="addPoint">Add Point</button>
+              </div>
+            </div>
+            <div class="degree-selector">
+              <label for="polyDegree" data-i18n="polynomialDegree">Polynomial Degree</label>
+              <select id="polyDegree">
+                <option value="1">1 (Linear)</option>
+                <option value="2" selected>2 (Quadratic)</option>
+                <option value="3">3 (Cubic)</option>
+                <option value="4">4 (Quartic)</option>
+                <option value="5">5 (Quintic)</option>
+              </select>
+            </div>
+            <div class="point-actions">
+              <button class="btn-secondary" id="clearPointsBtn" data-i18n="clearPoints">Clear Points</button>
+              <button class="btn-primary" id="fitCurveBtn" data-i18n="fitCurve">Fit Curve</button>
+            </div>
+            <div class="points-list" id="pointsList"></div>
+          </div>
+        </div>
+
+
+        <div class="graph-container" id="graphContainer">
+          <div id="desmosGraph" style="width:100%;height:500px;"></div>
+        </div>
+
+
+        <div class="ask-ai-box glass-card">
+          <label for="graphAskAI" data-i18n="askAILabel">Ask AI about this graph</label>
+          <div class="ask-ai-wrapper">
+            <textarea id="graphAskAI" rows="2"
+              placeholder="e.g. Find the roots, describe the behavior, find the area under the curve..."
+              data-i18n-placeholder="askAIPlaceholder" class="input-text textarea-input"></textarea>
+            <button class="btn-primary" id="askAIBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10" />
+              </svg>
+              <span data-i18n="askAI">Ask AI</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="graph-analysis glass-card" id="graphAnalysis" style="display:none;">
+          <h3 data-i18n="graphAnalysis">Graph Analysis</h3>
+          <div id="graphAnalysisContent"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+
+  <div class="modal-overlay" id="savedModal" style="display:none;">
+    <div class="modal glass-card">
+      <div class="modal-header">
+        <h2 data-i18n="savedProblems">Saved Problems</h2>
+        <button class="btn-icon modal-close" id="closeSavedModal">✕</button>
+      </div>
+      <div class="modal-body" id="savedList">
+        <p class="empty-state" data-i18n="noSavedProblems">No saved problems yet</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal-overlay" id="explainModal" style="display:none;">
+    <div class="modal glass-card">
+      <div class="modal-header">
+        <h2 data-i18n="whatDoesThisMean">What does this mean?</h2>
+        <button class="btn-icon modal-close" id="closeExplainModal">✕</button>
+      </div>
+      <div class="modal-body" id="explainContent">
+        <div class="loading-spinner small">
+          <div class="spinner-ring"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="/mathnote/js/i18n.js"></script>
+  <script src="/mathnote/js/graph.js"></script>
+  <script src="/mathnote/js/animate.js"></script>
+  <script src="/mathnote/js/app.js"></script>
+</body>
+
+</html>
