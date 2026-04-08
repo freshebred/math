@@ -1,4 +1,4 @@
-tạo .env và bỏ [API groq vào](https://groq.com) đó
+tạo .env và bỏ [API key của groq vào](https://groq.com) đó
 
 chạy 
 ```js
